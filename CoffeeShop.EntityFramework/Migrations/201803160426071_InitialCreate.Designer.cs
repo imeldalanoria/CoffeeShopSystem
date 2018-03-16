@@ -13,7 +13,7 @@ namespace CoffeeShop.EntityFramework.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201803140227155_InitialCreate"; }
+            get { return "201803160426071_InitialCreate"; }
         }
         
         string IMigrationMetadata.Source

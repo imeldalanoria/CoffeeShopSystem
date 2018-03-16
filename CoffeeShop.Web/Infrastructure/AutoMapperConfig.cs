@@ -1,10 +1,6 @@
 ﻿using AutoMapper;
 using CoffeeShop.Model;
 using CoffeeShop.Transport;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace CoffeeShop.Web.Infrastructure
 {
@@ -12,9 +8,15 @@ namespace CoffeeShop.Web.Infrastructure
     {
         public static void RegisterMappings()
         {
-            Mapper.Initialize(cfg => {
+            Mapper.Initialize(cfg =>
+            {
                 cfg.CreateMap<Office, OfficeModel>();
                 cfg.CreateMap<Product, ProductModel>();
+                cfg.CreateMap<OrderItem, OrderItemModel>();
+                cfg.CreateMap<OfficeModel, Office>()
+                    .ForMember(x => x.ProductInfos, opt => opt.Ignore());
+                cfg.CreateMap<ProductModel, Product>()
+                    .ForMember(x => x.OfficeInfo, opt => opt.Ignore());
             });
         }
     }

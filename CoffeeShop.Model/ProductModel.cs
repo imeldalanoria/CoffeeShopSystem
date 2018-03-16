@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace CoffeeShop.Model
 {
@@ -13,6 +8,6 @@ namespace CoffeeShop.Model
         [Display(Name = "Product Name")]
         public string ProductName { get; set; }
         public int Unit { get; set; }
-        public int OfficeInfo_OfficeID { get; set; }
+        public int OfficeID { get; set; }
     }
 }

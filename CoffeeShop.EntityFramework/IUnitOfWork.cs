@@ -1,9 +1,5 @@
 ﻿using CoffeeShop.EntityFramework.Repositories;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CoffeeShop.EntityFramework
 {
@@ -11,6 +7,7 @@ namespace CoffeeShop.EntityFramework
     {
         IOfficeRepository Offices { get; }
         IProductRepository Products { get; }
+        IOrderItemRepository OrderItems { get; }
         int Complete();
     }
 }

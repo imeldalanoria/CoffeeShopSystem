@@ -49,14 +49,16 @@
   <ItemGroup>
     <Compile Include="CoffeeShopContext.cs" />
     <Compile Include="IUnitOfWork.cs" />
-    <Compile Include="Repositories\IOfficeRepository.cs" />
-    <Compile Include="Repositories\IProductRepository.cs" />
-    <Compile Include="Repositories\IRepository.cs" />
-    <Compile Include="Migrations\201803140227155_InitialCreate.cs" />
-    <Compile Include="Migrations\201803140227155_InitialCreate.Designer.cs">
-      <DependentUpon>201803140227155_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\201803160426071_InitialCreate.cs" />
+    <Compile Include="Migrations\201803160426071_InitialCreate.Designer.cs">
+      <DependentUpon>201803160426071_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Persistence\OrderItemRepository.cs" />
+    <Compile Include="Repositories\IOfficeRepository.cs" />
+    <Compile Include="Repositories\IOrderItemRepository.cs" />
+    <Compile Include="Repositories\IProductRepository.cs" />
+    <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Persistence\OfficeRepository.cs" />
     <Compile Include="Persistence\ProductRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -80,8 +82,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201803140227155_InitialCreate.resx">
-      <DependentUpon>201803140227155_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201803160426071_InitialCreate.resx">
+      <DependentUpon>201803160426071_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CoffeeShop.Model.ProductModel>
+﻿@model IEnumerable<CoffeeShop.Model.OrderItemModel>
 
 @{
     ViewBag.Title = "Order";
@@ -6,97 +6,20 @@
 
 <h2>Order</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("OrderDrink", "Order", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
-    <p>
-        @Html.DropDownList("SelectedOffice", "Select Office")
-    </p>
-    <table class="table" >
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Unit)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OfficeInfo_OfficeID)
-            </th>
-            <th></th>
-        </tr>
 
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProductName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Unit)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.OfficeInfo_OfficeID)
-                </td>
-                <td>
-                    @Html.ActionLink("Double Americano", "OrderDoubleAmericano", new { id = item.OfficeInfo_OfficeID }, new { @class = "btn btn-primary" })
-                </td>
-            </tr>
-        }
-
-    </table>
-
-    <p>
-        <input type="submit" value="Double Americano" id="btnDoubleAmericano" />
-        <input type="submit" value="Sweet Latte" id="btnSweetLatte" />
-        <input type="submit" value="Flat White" id="btnFlatWhite" />
-    </p>
-}
-
-@section Scripts
-{
-    <script>
-    $(document).ready(function () {
-        $('#btnDoubleAmericano').on('click', function () {
-            orderDrink("DoubleAmericano");
-        });
-
-        $('#btnSweetLatte').on('click', function () {
-            var Office_ID = $("#SelectedOffice").val();
-                $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("SweetLatte", "Order")",
-                    data: { Office_ID: Office_ID },
-                    headers: { 'VerificationToken': $("#forgeryToken").val() }
-                    })
-                    .done(function (data) {
-                    });
-        });
-
-        $('#btnFlatWhite').on('click', function () {
-            var Office_ID = $("#SelectedOffice").val();
-                $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("FlatWhite", "Order")",
-                    data: { Office_ID: Office_ID},
-                    headers: { 'VerificationToken': $("#forgeryToken").val() }
-                    })
-                    .done(function (data) {
-                    });
-        });
-
-        function orderDrink(type) {
-            var SelectedOffice = $("#SelectedOffice").val();
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("Index", "Order")",
-                data: { SelectedOffice: SelectedOffice, type: type  },
-                headers: { 'VerificationToken': $("#forgeryToken").val() }
-                })
-                .done(function (data) {
-                    alert('Order Successful');
-                });
-        }
-     });
-    </script>
+    <div style="height:70px">
+        Select Office : @Html.DropDownList("SelectedOffice", (IEnumerable<SelectListItem>)ViewBag.SelectedOffice, new { @class = "breadcrumb" })
+    </div>
+    <div style="height:70px">
+        Customer Name : <input type="text" id="btnClientName" class="breadcrumb" style="width:450px" name="clientName" required />
+    </div>
+    <div style="height:30px">Choose :</div>
+    <div>
+        <input type="submit" value="Double Americano" name="DoubleAmericano" class="btn btn-primary" style="height:150px; width:150px" />
+        <input type="submit" value="Sweet Latte" name="SweetLatte" class="btn btn-primary" style="height:150px; width:150px" />
+        <input type="submit" value="Flat White" name="FlatWhite" class="btn btn-primary" style="height:150px; width:150px" />
+    </div>
 }

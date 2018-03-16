@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace CoffeeShop.Transport
 {
@@ -13,6 +8,7 @@ namespace CoffeeShop.Transport
         public int ProductID { get; set; }
         public string ProductName { get; set; }
         public int Unit { get; set; }
+        public int OfficeID { get; set; }
         public virtual Office OfficeInfo { get; set; }
     }
 }

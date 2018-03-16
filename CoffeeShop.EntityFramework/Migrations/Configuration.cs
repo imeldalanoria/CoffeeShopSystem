@@ -1,11 +1,8 @@
 namespace CoffeeShop.EntityFramework.Migrations
 {
     using CoffeeShop.Transport;
-    using System;
     using System.Collections.Generic;
-    using System.Data.Entity;
     using System.Data.Entity.Migrations;
-    using System.Linq;
 
     internal sealed class Configuration : DbMigrationsConfiguration<CoffeeShop.EntityFramework.CoffeeShopContext>
     {
@@ -22,9 +19,9 @@ namespace CoffeeShop.EntityFramework.Migrations
                 PantryName = "Pantry1",
                 ProductInfos = new List<Product>()
                 {
-                    new Product() { ProductName = "Coffee Beans", Unit = 15 },
-                    new Product() { ProductName = "Sugar", Unit = 15},
-                    new Product() { ProductName = "Milk", Unit = 15  }
+                    new Product() { ProductName = "Coffee Beans", Unit = 45 , OfficeID =1},
+                    new Product() { ProductName = "Sugar", Unit = 45, OfficeID =1},
+                    new Product() { ProductName = "Milk", Unit = 45 , OfficeID =1 }
                 }
             };
             Office office2 = new Office()
@@ -33,9 +30,9 @@ namespace CoffeeShop.EntityFramework.Migrations
                 PantryName = "Pantry2",
                 ProductInfos = new List<Product>()
                 {
-                    new Product() { ProductName = "Coffee Beans", Unit = 15  },
-                    new Product() { ProductName = "Sugar", Unit = 15  },
-                    new Product() { ProductName = "Milk", Unit = 15  }
+                    new Product() { ProductName = "Coffee Beans", Unit = 45  , OfficeID =2},
+                    new Product() { ProductName = "Sugar", Unit = 45 , OfficeID =2 },
+                    new Product() { ProductName = "Milk", Unit = 45  , OfficeID =2}
                 }
             };
 

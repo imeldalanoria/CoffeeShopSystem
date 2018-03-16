@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CoffeeShop.Transport
 {
@@ -19,6 +15,7 @@ namespace CoffeeShop.Transport
         public int OfficeID { get; set; }
         public string OfficeName { get; set; }
         public string PantryName { get; set; }
+        [ForeignKey("OfficeID")]
         public virtual ICollection<Product> ProductInfos { get; set; }
     }
 }

@@ -1,32 +1,30 @@
-﻿@model IEnumerable<CoffeeShop.Model.ProductModel>
+﻿@model IEnumerable<CoffeeShop.Model.OrderItemModel>
 
 @{
-    ViewBag.Title = "Product";
+    ViewBag.Title = "OrderDrink";
 }
 
-<h2>Product</h2>
+<h2>Order Details</h2>
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-
     <p>
-        @Html.DropDownList("SelectedOffice", (IEnumerable<SelectListItem>)ViewBag.SelectedOffice, "Select Office", new { @class = "breadcrumb" })
-        <input type="submit" value="Filter" class="btn btn-primary" />
+        <canvas id="myOrderChart"></canvas>
     </p>
-    <p >
-        <canvas id="myChart"></canvas>
-    </p>
-    
-    <table class="table" id="tblProduct">
+
+    <table class="table">
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ProductName)
+                @Html.DisplayNameFor(model => model.OrderName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Unit)
+                @Html.DisplayNameFor(model => model.ClientName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.OfficeID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AddedDate)
             </th>
             <th></th>
         </tr>
@@ -35,13 +33,16 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ProductName)
+                    @Html.DisplayFor(modelItem => item.OrderName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Unit)
+                    @Html.DisplayFor(modelItem => item.ClientName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.OfficeID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AddedDate)
                 </td>
             </tr>
         }
@@ -52,32 +53,31 @@
 {
     <script>
         $(document).ready(function () {
-            var id = $("#SelectedOffice").val();
             $.ajax({
                     type: "POST",
-                url: "@Url.Action("GetProduct", "Product")" + "/" + id,
+                    url: "@Url.Action("GetOrders", "Order")", 
                     dataType: "json",
                     headers: { 'VerificationToken': $("#forgeryToken").val() }
                 }).done(
-                    function (data) {
+                    function (data,status) {
                         var aData = data.data;
-                        createProductChart(aData);
+                        createOrderChart(aData);
                     });
 
-            function createProductChart(data) {
-                var CoffeeBeans = data[0].Unit;
-                var Sugar = data[1].Unit;
-                var Milk = data[2].Unit;
+            function createOrderChart(data) {
+                var DoubleAmericano = data[0] == undefined ? 0 : data[0].Count;
+                var SweetLatte = data[1] == undefined ? 0 : data[1].Count;
+                var FlatWhite = data[2] == undefined ? 0 : data[2].Count;
 
-                var ctx = document.getElementById('myChart').getContext('2d');
+                var ctx = document.getElementById('myOrderChart').getContext('2d');
                 var chart = new Chart(ctx, {
                     type: 'horizontalBar',
                     data: {
-                        labels: ["Coffee Beans", "Sugar", "Milk"],
+                        labels: ["Double Americano", "Sweet Latte", "Flat White"],
                         datasets: [{
-                            label: "Items",
+                            label: "Order Items",
                             backgroundColor: ["rgba(128, 128, 128, 1)", "rgba(222, 163, 104, 1)", "rgba(237, 236, 227, 1)"],
-                            data: [CoffeeBeans, Sugar, Milk],
+                            data: [DoubleAmericano, SweetLatte, FlatWhite],
                         }]
                     },
                     options: {

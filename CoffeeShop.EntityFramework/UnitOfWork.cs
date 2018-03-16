@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CoffeeShop.EntityFramework.Persistence;
+﻿using CoffeeShop.EntityFramework.Persistence;
 using CoffeeShop.EntityFramework.Repositories;
 
 namespace CoffeeShop.EntityFramework
@@ -17,10 +12,12 @@ namespace CoffeeShop.EntityFramework
             _context = context;
             Offices = new OfficeRepository(_context);
             Products = new ProductRepository(_context);
+            OrderItems = new OrderItemRepository(_context);
         }
 
         public IOfficeRepository Offices { get; private set; }
         public IProductRepository Products { get; private set; }
+        public IOrderItemRepository OrderItems { get; private set; }
 
         public int Complete()
         {

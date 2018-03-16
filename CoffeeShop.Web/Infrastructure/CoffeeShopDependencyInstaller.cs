@@ -5,11 +5,7 @@ using CoffeeShop.EntityFramework;
 using CoffeeShop.EntityFramework.Persistence;
 using CoffeeShop.EntityFramework.Repositories;
 using CoffeeShop.Web.Controllers;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Web;
 
 namespace CoffeeShop.Web.Infrastructure
 {
@@ -24,6 +20,7 @@ namespace CoffeeShop.Web.Infrastructure
                 Component.For<DbContext>().ImplementedBy<CoffeeShopContext>(),
                 Component.For(typeof(Repository<>)).ImplementedBy<OfficeRepository>(),
                 Component.For(typeof(Repository<>)).ImplementedBy<ProductRepository>(),
+                Component.For(typeof(Repository<>)).ImplementedBy<OrderItemRepository>(),
                 Component.For(typeof(IRepository<>)).ImplementedBy(typeof(Repository<>))
                 );
 

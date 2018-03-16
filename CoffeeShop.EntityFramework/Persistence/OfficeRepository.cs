@@ -1,12 +1,6 @@
 ﻿using CoffeeShop.EntityFramework.Repositories;
-using CoffeeShop.Model;
 using CoffeeShop.Transport;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CoffeeShop.EntityFramework.Persistence
 {
@@ -18,6 +12,11 @@ namespace CoffeeShop.EntityFramework.Persistence
         public CoffeeShopContext CoffeeShopContext
         {
             get { return Context as CoffeeShopContext; }
+        }
+
+        public Office GetByOfficeId(int officeId)
+        {
+            return CoffeeShopContext.Offices.Where(o => o.OfficeID == officeId).FirstOrDefault();
         }
     }
 }

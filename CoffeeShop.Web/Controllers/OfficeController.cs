@@ -1,10 +1,9 @@
 ﻿using CoffeeShop.EntityFramework;
-using CoffeeShop.EntityFramework.Repositories;
 using CoffeeShop.Model;
+using CoffeeShop.Transport;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace CoffeeShop.Web.Controllers
@@ -18,33 +17,20 @@ namespace CoffeeShop.Web.Controllers
             _unitOfWork = new UnitOfWork(new CoffeeShopContext());
         }
 
-        [HttpGet]
         public ActionResult Index()
         {
             var offices = _unitOfWork.Offices.GetAll().Select(o => AutoMapper.Mapper.Map<OfficeModel>(o)).ToList();
             return View(offices);
         }
 
-        // GET: Office/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: Office/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Office/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(OfficeModel officeModel)
         {
             try
             {
-                // TODO: Add insert logic here
-
+                var model = AutoMapper.Mapper.Map<OfficeModel, Office>(officeModel);
+                _unitOfWork.Offices.Add(model);
+                _unitOfWork.Complete();
                 return RedirectToAction("Index");
             }
             catch
@@ -52,48 +38,73 @@ namespace CoffeeShop.Web.Controllers
                 return View();
             }
         }
-
-        // GET: Office/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Create()
         {
             return View();
         }
+        public ActionResult Edit(int id)
+        {
+            var office = AutoMapper.Mapper.Map<OfficeModel>(_unitOfWork.Offices.GetByOfficeId(id));
+            return View(office);
+        }
 
-        // POST: Office/Edit/5
         [HttpPost]
         public ActionResult Edit(int id, FormCollection collection)
         {
             try
             {
-                // TODO: Add update logic here
+                ProductModel productModel = new ProductModel();
+                ProductModel productModel2 = new ProductModel();
+                ProductModel productModel3 = new ProductModel();
 
+                var productNames = collection["products.ProductName"].ToString().Split(',');
+                var units = collection["products.Unit"].ToString().Split(',');
+                List<string> inputPN = new List<string>();
+                List<string> inputU = new List<string>();
+                foreach (var productName in productNames)
+                {
+                    inputPN.Add(productName);
+                }
+                foreach (var unit in units)
+                {
+                    inputU.Add(unit);
+                }
+                productModel.ProductName = inputPN[0];
+                productModel.Unit = Convert.ToInt32(inputU[0]);
+                UpdateOfficeProduct(productModel, id);
+
+                productModel2.ProductName = inputPN[1];
+                productModel2.Unit = Convert.ToInt32(inputU[1]);
+                UpdateOfficeProduct(productModel2, id);
+
+                productModel3.ProductName = inputPN[2];
+                productModel3.Unit = Convert.ToInt32(inputU[2]);
+                UpdateOfficeProduct(productModel3, id);
+
+                OfficeModel officeModel = new OfficeModel();
+                officeModel.OfficeID = id;
+                officeModel.OfficeName = collection["OfficeName"].ToString();
+                officeModel.PantryName = collection["PantryName"].ToString();
+                var model = AutoMapper.Mapper.Map<OfficeModel, Office>(officeModel);
+
+                _unitOfWork.Offices.Update(model);
+                _unitOfWork.Complete();
                 return RedirectToAction("Index");
             }
-            catch
+            catch 
             {
                 return View();
             }
         }
 
-        // GET: Office/Delete/5
-        public ActionResult Delete(int id)
+        private void UpdateOfficeProduct(ProductModel productModel, int id)
         {
-            return View();
-        }
-
-        // POST: Office/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
+            var model = AutoMapper.Mapper.Map<ProductModel, Product>(productModel);
+            model.OfficeID = id;
+            var item = AutoMapper.Mapper.Map<ProductModel>(_unitOfWork.Products.GetDataByProductName(id, productModel.ProductName));
+            if (item == null)
             {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
+                _unitOfWork.Products.Add(model);
             }
         }
     }

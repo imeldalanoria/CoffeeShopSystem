@@ -2,9 +2,7 @@
 using CoffeeShop.Model;
 using CoffeeShop.Transport;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace CoffeeShop.Web.Controllers
@@ -18,126 +16,112 @@ namespace CoffeeShop.Web.Controllers
             _unitOfWork = new UnitOfWork(new CoffeeShopContext());
         }
 
-        public ActionResult Index(int? SelectedOffice, string type)
+        public ActionResult Index(int? SelectedOffice)
         {
+            var products = _unitOfWork.Products.GetAll().Select(o => AutoMapper.Mapper.Map<ProductModel>(o)).ToList();
             var offices = _unitOfWork.Offices.GetAll().Select(o => AutoMapper.Mapper.Map<OfficeModel>(o)).ToList();
-            ViewBag.SelectedOffice = new SelectList(offices, "OfficeID", "OfficeName", SelectedOffice);
+
+            var result = (from p in products
+                          join o in offices on p.OfficeID equals o.OfficeID
+                          select o).Distinct();
+
+            ViewBag.SelectedOffice = new SelectList(result, "OfficeID", "OfficeName", SelectedOffice);
+            return View();
+        }
+
+        public JsonResult GetOrders()
+        {
+            var id = Convert.ToInt32(TempData["Id"].ToString());
+            var orders = _unitOfWork.OrderItems.GetOrderByOfficeId(id).Select(o=> AutoMapper.Mapper.Map<OrderItemModel>(o)).ToList();
+            var results = from order in orders
+                          where order.OfficeID == id
+                          group order by order.OrderName
+             into grp
+                         select new
+                         {
+                             Name = grp.Key,
+                             Count = grp.Select(x => x.OrderName).Count()
+                         };
+
+            return Json(new
+            {
+                data = results
+            },
+            JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult OrderDrink(int? SelectedOffice, string clientName, string DoubleAmericano, string SweetLatte, string FlatWhite)
+        {
+            var id = SelectedOffice.GetValueOrDefault();
+
             if (ModelState.IsValid)
             {
+                var type = DoubleAmericano ?? SweetLatte ?? FlatWhite;
+
+                OrderItemModel model = new OrderItemModel();
+                model.OrderName = type;
+                model.ClientName = clientName;
+                model.OfficeID = id;
+                model.AddedDate = DateTime.UtcNow;
+
                 switch (type)
                 {
-                    case "DoubleAmericano":
-                        DoubleAmericano(SelectedOffice);
+                    case "Double Americano":
+                        OrderDoubleAmericano(model);
                         break;
-                    case "SweetLatte":
-                        SweetLatte(SelectedOffice);
+                    case "Sweet Latte":
+                        OrderSweetLatte(model);
                         break;
-                    case "FlatWhite":
-                        FlatWhite(SelectedOffice);
+                    case "Flat White":
+                        OrderFlatWhite(model);
                         break;
                 }
             }
-            return View();
+
+            TempData["Id"] = id;
+            var orderItems = _unitOfWork.OrderItems.GetOrderByOfficeId(id).Select(o => AutoMapper.Mapper.Map<OrderItemModel>(o)).ToList();
+            return View(orderItems);
         }
 
-        public void DoubleAmericano(int? officeId)
+        public void OrderDoubleAmericano(OrderItemModel ordermodel)
         {
-            //var offices = _unitOfWork.Offices.GetAll().Select(o => AutoMapper.Mapper.Map<OfficeModel>(o)).ToList();
-            //ViewBag.SelectedOffice = new SelectList(offices, "OfficeID", "OfficeName", SelectedOffice);
-            //int officeId = SelectedOffice.GetValueOrDefault();
-            var model = AutoMapper.Mapper.Map<ProductModel>(_unitOfWork.Products.GetDataByProductName(officeId, "Coffee Beans"));
-            var productCoffeeBeansCount = model.Unit;
-            var unitId = _unitOfWork.Products.Get(model.ProductID);
-            unitId.Unit = productCoffeeBeansCount - 3;
-            _unitOfWork.Products.Update(unitId);
+            Order(ordermodel, 3, 0, 0);
+        }
+
+        private void OrderFlatWhite(OrderItemModel ordermodel)
+        {
+            Order(ordermodel, 2, 1, 4);
+        }
+
+        private void OrderSweetLatte(OrderItemModel ordermodel)
+        {
+            Order(ordermodel,2,5,3);
+        }
+
+        private void Order(OrderItemModel ordermodel, int coffeeBeans, int sugar, int milk)
+        {
+            var modelCF = AutoMapper.Mapper.Map<ProductModel>(_unitOfWork.Products.GetDataByProductName(ordermodel.OfficeID, "Coffee Beans"));
+            var productCoffeeBeansCount = modelCF.Unit;
+            var unitCF = _unitOfWork.Products.Get(modelCF.ProductID);
+            unitCF.Unit = productCoffeeBeansCount - coffeeBeans;
+            _unitOfWork.Products.Update(unitCF);
+
+            var modelSugar = AutoMapper.Mapper.Map<ProductModel>(_unitOfWork.Products.GetDataByProductName(ordermodel.OfficeID, "Sugar"));
+            var productSugar = modelSugar.Unit;
+            var unitSugar = _unitOfWork.Products.Get(modelSugar.ProductID);
+            unitSugar.Unit = productSugar - sugar;
+            _unitOfWork.Products.Update(unitSugar);
+
+            var modelMilk = AutoMapper.Mapper.Map<ProductModel>(_unitOfWork.Products.GetDataByProductName(ordermodel.OfficeID, "Milk"));
+            var productMilk = modelMilk.Unit;
+            var unitMilk = _unitOfWork.Products.Get(modelMilk.ProductID);
+            unitMilk.Unit = productMilk - milk;
+            _unitOfWork.Products.Update(unitMilk);
+
+            var ordermodels = AutoMapper.Mapper.Map<OrderItemModel, OrderItem>(ordermodel);
+            _unitOfWork.OrderItems.Add(ordermodels);
+
             _unitOfWork.Complete();
-            //return RedirectToAction("Index", "Product", officeId);
-        }
-
-        public ActionResult OrderDoubleAmericano()
-        {
-            return View();
-        }
-        private void FlatWhite(int? selectedOffice)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void SweetLatte(int? selectedOffice)
-        {
-            throw new NotImplementedException();
-        }
-
-        // GET: Order/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: Order/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Order/Create
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Order/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: Order/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Order/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Order/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
         }
     }
 }
