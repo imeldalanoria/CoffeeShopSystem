@@ -20,18 +20,25 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.OfficeName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PantryName)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.OfficeID }) 
-        </td>
-    </tr>
-}
-
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.OfficeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PantryName)
+            </td>
+            <td>
+                @if (!item.HasProduct)
+                {
+                    @Html.ActionLink("Add Product", "Edit", new { id = item.OfficeID })
+                }
+                else
+                {
+                    <text>Add Product</text>
+                }
+            </td>
+        </tr>
+    }
 </table>

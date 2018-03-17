@@ -53,6 +53,10 @@
     <Compile Include="Migrations\201803160426071_InitialCreate.Designer.cs">
       <DependentUpon>201803160426071_InitialCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803172053216_UpdateOfficeTable.cs" />
+    <Compile Include="Migrations\201803172053216_UpdateOfficeTable.Designer.cs">
+      <DependentUpon>201803172053216_UpdateOfficeTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Persistence\OrderItemRepository.cs" />
     <Compile Include="Repositories\IOfficeRepository.cs" />
@@ -84,6 +88,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201803160426071_InitialCreate.resx">
       <DependentUpon>201803160426071_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803172053216_UpdateOfficeTable.resx">
+      <DependentUpon>201803172053216_UpdateOfficeTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

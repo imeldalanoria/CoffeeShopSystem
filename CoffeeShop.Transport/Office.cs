@@ -15,6 +15,7 @@ namespace CoffeeShop.Transport
         public int OfficeID { get; set; }
         public string OfficeName { get; set; }
         public string PantryName { get; set; }
+        public bool HasProduct { get; set; }
         [ForeignKey("OfficeID")]
         public virtual ICollection<Product> ProductInfos { get; set; }
     }

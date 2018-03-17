@@ -85,6 +85,7 @@ namespace CoffeeShop.Web.Controllers
                 officeModel.OfficeID = id;
                 officeModel.OfficeName = collection["OfficeName"].ToString();
                 officeModel.PantryName = collection["PantryName"].ToString();
+                officeModel.HasProduct = true;
                 var model = AutoMapper.Mapper.Map<OfficeModel, Office>(officeModel);
 
                 _unitOfWork.Offices.Update(model);

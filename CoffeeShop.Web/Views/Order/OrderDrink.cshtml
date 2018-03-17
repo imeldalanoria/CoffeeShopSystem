@@ -11,7 +11,6 @@
     <p>
         <canvas id="myOrderChart"></canvas>
     </p>
-
     <table class="table">
         <tr>
             <th>
@@ -19,9 +18,6 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ClientName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OfficeID)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.AddedDate)
@@ -39,9 +35,6 @@
                     @Html.DisplayFor(modelItem => item.ClientName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.OfficeID)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.AddedDate)
                 </td>
             </tr>
@@ -55,7 +48,7 @@
         $(document).ready(function () {
             $.ajax({
                     type: "POST",
-                    url: "@Url.Action("GetOrders", "Order")", 
+                    url: "@Url.Action("GetOrders", "Order")",
                     dataType: "json",
                     headers: { 'VerificationToken': $("#forgeryToken").val() }
                 }).done(
@@ -65,9 +58,20 @@
                     });
 
             function createOrderChart(data) {
-                var DoubleAmericano = data[0] == undefined ? 0 : data[0].Count;
-                var SweetLatte = data[1] == undefined ? 0 : data[1].Count;
-                var FlatWhite = data[2] == undefined ? 0 : data[2].Count;
+                var DoubleAmericano = 0;
+                var FlatWhite = 0;
+                var SweetLatte = 0;
+                $.each(data, function (index, value) {
+                    if (value.Name == "Double Americano") {
+                        DoubleAmericano = value.Count;
+                    }
+                    else if (value.Name == "Flat White") {
+                        FlatWhite = value.Count;
+                    }
+                    else if (value.Name == "Sweet Latte") {
+                        SweetLatte = value.Count;
+                    }
+                });
 
                 var ctx = document.getElementById('myOrderChart').getContext('2d');
                 var chart = new Chart(ctx, {

@@ -17,6 +17,7 @@ namespace CoffeeShop.EntityFramework.Migrations
             {
                 OfficeName = "Manila",
                 PantryName = "Pantry1",
+                HasProduct = true,
                 ProductInfos = new List<Product>()
                 {
                     new Product() { ProductName = "Coffee Beans", Unit = 45 , OfficeID =1},
@@ -28,6 +29,7 @@ namespace CoffeeShop.EntityFramework.Migrations
             {
                 OfficeName = "London",
                 PantryName = "Pantry2",
+                HasProduct = true,
                 ProductInfos = new List<Product>()
                 {
                     new Product() { ProductName = "Coffee Beans", Unit = 45  , OfficeID =2},

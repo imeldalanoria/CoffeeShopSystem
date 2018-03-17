@@ -9,7 +9,7 @@
 @using (Html.BeginForm("OrderDrink", "Order", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
-
+    @Html.Raw(TempData["msg"])
     <div style="height:70px">
         Select Office : @Html.DropDownList("SelectedOffice", (IEnumerable<SelectListItem>)ViewBag.SelectedOffice, new { @class = "breadcrumb" })
     </div>

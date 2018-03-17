@@ -9,5 +9,6 @@ namespace CoffeeShop.Model
         public string OfficeName { get; set; }
         [Display(Name = "Pantry Name")]
         public string PantryName { get; set; }
+        public bool HasProduct { get; set; }
     }
 }

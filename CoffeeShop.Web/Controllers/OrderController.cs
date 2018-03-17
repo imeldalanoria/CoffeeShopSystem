@@ -62,18 +62,21 @@ namespace CoffeeShop.Web.Controllers
                 model.OrderName = type;
                 model.ClientName = clientName;
                 model.OfficeID = id;
-                model.AddedDate = DateTime.UtcNow;
+                model.AddedDate = DateTime.Now;
 
                 switch (type)
                 {
                     case "Double Americano":
-                        OrderDoubleAmericano(model);
+                        if (!OrderDoubleAmericano(model))
+                            return RedirectToAction("Index", "Order", TempData["msg"] = "<script>alert('Insufficient Product');</script>");
                         break;
                     case "Sweet Latte":
-                        OrderSweetLatte(model);
+                        if(!OrderSweetLatte(model))
+                            return RedirectToAction("Index", "Order", TempData["msg"] = "<script>alert('Insufficient Product');</script>");                       
                         break;
                     case "Flat White":
-                        OrderFlatWhite(model);
+                        if(!OrderFlatWhite(model))
+                            return RedirectToAction("Index", "Order", TempData["msg"] = "<script>alert('Insufficient Product');</script>");
                         break;
                 }
             }
@@ -83,45 +86,59 @@ namespace CoffeeShop.Web.Controllers
             return View(orderItems);
         }
 
-        public void OrderDoubleAmericano(OrderItemModel ordermodel)
+        public bool OrderDoubleAmericano(OrderItemModel ordermodel)
         {
-            Order(ordermodel, 3, 0, 0);
+           return Order(ordermodel, 3, 0, 0);
         }
 
-        private void OrderFlatWhite(OrderItemModel ordermodel)
+        private bool OrderFlatWhite(OrderItemModel ordermodel)
         {
-            Order(ordermodel, 2, 1, 4);
+            return Order(ordermodel, 2, 1, 4);
         }
 
-        private void OrderSweetLatte(OrderItemModel ordermodel)
+        private bool OrderSweetLatte(OrderItemModel ordermodel)
         {
-            Order(ordermodel,2,5,3);
+            return Order(ordermodel,2,5,3);
         }
 
-        private void Order(OrderItemModel ordermodel, int coffeeBeans, int sugar, int milk)
+        private bool Order(OrderItemModel ordermodel, int coffeeBeans, int sugar, int milk)
         {
+            var result = true;
             var modelCF = AutoMapper.Mapper.Map<ProductModel>(_unitOfWork.Products.GetDataByProductName(ordermodel.OfficeID, "Coffee Beans"));
             var productCoffeeBeansCount = modelCF.Unit;
             var unitCF = _unitOfWork.Products.Get(modelCF.ProductID);
             unitCF.Unit = productCoffeeBeansCount - coffeeBeans;
+            if (unitCF.Unit < 0)
+            {
+                return false;
+            }
             _unitOfWork.Products.Update(unitCF);
 
             var modelSugar = AutoMapper.Mapper.Map<ProductModel>(_unitOfWork.Products.GetDataByProductName(ordermodel.OfficeID, "Sugar"));
             var productSugar = modelSugar.Unit;
             var unitSugar = _unitOfWork.Products.Get(modelSugar.ProductID);
             unitSugar.Unit = productSugar - sugar;
+            if (unitSugar.Unit < 0)
+            {
+                return false;
+            }
             _unitOfWork.Products.Update(unitSugar);
 
             var modelMilk = AutoMapper.Mapper.Map<ProductModel>(_unitOfWork.Products.GetDataByProductName(ordermodel.OfficeID, "Milk"));
             var productMilk = modelMilk.Unit;
             var unitMilk = _unitOfWork.Products.Get(modelMilk.ProductID);
             unitMilk.Unit = productMilk - milk;
+            if (unitMilk.Unit < 0)
+            {
+                return false;
+            }
             _unitOfWork.Products.Update(unitMilk);
 
             var ordermodels = AutoMapper.Mapper.Map<OrderItemModel, OrderItem>(ordermodel);
             _unitOfWork.OrderItems.Add(ordermodels);
 
             _unitOfWork.Complete();
+            return result;
         }
     }
 }
