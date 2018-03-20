@@ -6,4 +6,4 @@
 
 I used code first approach for this exam.
 
-http://coffeeshopsystem.azurewebsites.net/
+https://coffeeshopsystem.azurewebsites.net/
